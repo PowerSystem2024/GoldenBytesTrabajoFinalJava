@@ -1,4 +1,3 @@
-
 package tateti;
 
 import java.util.Scanner;
@@ -12,8 +11,24 @@ public class TaTeTi {
     private static char currentPlayer = 'X';
 
     public static void main(String[] args) {
+        mostrarPresentacion();
         inicializarTablero();
         mostrarMenu();
+    }
+
+    private static void mostrarPresentacion() {
+        System.out.println("======================================================");
+        System.out.println("             Bienvenidos al juego de Ta-Te-Ti         ");
+        System.out.println("                     GoldenBytes                      ");
+        System.out.println("------------------------------------------------------");
+        System.out.println("           ¡Disfruta de este clásico juego!           ");
+        System.out.println("  Juega con un amigo y demuestra tus habilidades en   ");
+        System.out.println("            estrategia y pensamiento rápido.          ");
+        System.out.println("======================================================\n");
+
+        // Espera a que el usuario presione Enter para continuar
+        System.out.println("Presiona Enter para comenzar...");
+        scanner.nextLine(); // Espera la entrada de Enter
     }
 
     private static void mostrarMenu() {
@@ -51,7 +66,7 @@ public class TaTeTi {
     private static void mostrarCreditos() {
         System.out.println("\n===== CRÉDITOS =====");
         System.out.println("Juego de Ta-Te-Tí desarrollado en Java.");
-        System.out.println("Autor: Tu Nombre");
+        System.out.println("Autor: GoldenBytes");
         System.out.println("Universidad Tecnológica Nacional, Proyecto Integrador.");
         System.out.println("Presiona Enter para regresar al menú...");
         scanner.nextLine();
