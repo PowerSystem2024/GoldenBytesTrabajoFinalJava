@@ -1,17 +1,20 @@
 package tateti;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class TaTeTi {
 
-    private static Scanner scanner = new Scanner(System.in);
-    private static String player1Name;
-    private static String player2Name;
-    private static char[][] board = new char[3][3];
-    private static char currentPlayer = 'X';
+    private static Scanner entrada = new Scanner(System.in);
+    private static String nombreJugador1;
+    private static String nombreJugador2;
+    private static char[][] tablero = new char[3][3];
+    private static char jugadorActual = 'X';
 
     public static void main(String[] args) {
         mostrarPresentacion();
+        solicitarNombresJugadores();
+        mostrarBienvenida();
         inicializarTablero();
         mostrarMenu();
     }
@@ -26,9 +29,25 @@ public class TaTeTi {
         System.out.println("            estrategia y pensamiento rápido.          ");
         System.out.println("======================================================\n");
 
-        // Espera a que el usuario presione Enter para continuar
         System.out.println("Presiona Enter para comenzar...");
-        scanner.nextLine(); // Espera la entrada de Enter
+        entrada.nextLine(); // Espera la entrada de Enter
+    }
+
+    private static void solicitarNombresJugadores() {
+        do {
+            System.out.print("Ingrese el nombre del Jugador 1 (X) (mínimo 3 letras): ");
+            nombreJugador1 = entrada.nextLine();
+        } while (nombreJugador1.length() < 3);
+
+        do {
+            System.out.print("Ingrese el nombre del Jugador 2 (O) (mínimo 3 letras): ");
+            nombreJugador2 = entrada.nextLine();
+        } while (nombreJugador2.length() < 3);
+    }
+
+    private static void mostrarBienvenida() {
+        System.out.println("\n¡Bienvenidos, " + nombreJugador1 + " y " + nombreJugador2 + "!");
+        System.out.println("Prepárense para una partida emocionante de Ta-Te-Ti.\n");
     }
 
     private static void mostrarMenu() {
@@ -40,14 +59,14 @@ public class TaTeTi {
             System.out.println("3. Créditos");
             System.out.println("4. Salir");
             System.out.print("Elige una opción: ");
-            opcion = scanner.nextInt();
-            scanner.nextLine(); // Consumir el salto de línea
+            opcion = entrada.nextInt();
+            entrada.nextLine(); // Consumir el salto de línea
 
             switch (opcion) {
                 case 1 -> iniciarJuego();
                 case 2 -> mostrarReglas();
                 case 3 -> mostrarCreditos();
-                case 4 -> System.out.println("Gracias por jugar. ¡Hasta pronto!");
+                case 4 -> mostrarDespedida();
                 default -> System.out.println("Opción no válida. Intente de nuevo.");
             }
         } while (opcion != 4);
@@ -60,7 +79,7 @@ public class TaTeTi {
         System.out.println("3. El primer jugador que logre colocar tres símbolos en línea (horizontal, vertical o diagonal) gana.");
         System.out.println("4. Si todas las celdas se llenan sin un ganador, el juego termina en empate.");
         System.out.println("Presiona Enter para regresar al menú...");
-        scanner.nextLine();
+        entrada.nextLine();
     }
 
     private static void mostrarCreditos() {
@@ -69,48 +88,63 @@ public class TaTeTi {
         System.out.println("Autor: GoldenBytes");
         System.out.println("Universidad Tecnológica Nacional, Proyecto Integrador.");
         System.out.println("Presiona Enter para regresar al menú...");
-        scanner.nextLine();
+        entrada.nextLine();
     }
 
     private static void iniciarJuego() {
-        System.out.print("Ingrese el nombre del Jugador 1 (X): ");
-        player1Name = scanner.nextLine();
-        System.out.print("Ingrese el nombre del Jugador 2 (O): ");
-        player2Name = scanner.nextLine();
         inicializarTablero();
-        currentPlayer = 'X';
+        jugadorActual = 'X';
 
         while (true) {
             mostrarTablero();
-            String currentPlayerName = (currentPlayer == 'X') ? player1Name : player2Name;
-            System.out.println(currentPlayerName + ", es tu turno. Jugador: " + currentPlayer);
-            System.out.print("Ingrese fila (1-3): ");
-            int fila = scanner.nextInt() - 1;
-            System.out.print("Ingrese columna (1-3): ");
-            int columna = scanner.nextInt() - 1;
+            String nombreJugadorActual = (jugadorActual == 'X') ? nombreJugador1 : nombreJugador2;
+            System.out.println(nombreJugadorActual + ", es tu turno. Jugador: " + jugadorActual);
+            
+            int fila = -1, columna = -1;
 
-            if (fila >= 0 && fila < 3 && columna >= 0 && columna < 3 && board[fila][columna] == ' ') {
-                board[fila][columna] = currentPlayer;
-                if (verificarGanador()) {
-                    mostrarTablero();
-                    System.out.println("¡Felicidades, " + currentPlayerName + "! El jugador " + currentPlayer + " ha ganado.");
-                    break;
-                } else if (verificarEmpate()) {
-                    mostrarTablero();
-                    System.out.println("¡El juego terminó en empate!");
-                    break;
+            // Repetir hasta obtener coordenadas válidas
+            boolean coordenadasValidas = false;
+            while (!coordenadasValidas) {
+                try {
+                    System.out.print("Ingrese fila (1-3): ");
+                    fila = entrada.nextInt() - 1;
+                    System.out.print("Ingrese columna (1-3): ");
+                    columna = entrada.nextInt() - 1;
+
+                    // Validar rango de filas y columnas
+                    if (fila >= 0 && fila < 3 && columna >= 0 && columna < 3 && tablero[fila][columna] == ' ') {
+                        coordenadasValidas = true;
+                    } else {
+                        System.out.println("Movimiento inválido. Intente nuevamente.");
+                    }
+                } catch (InputMismatchException e) {
+                    System.out.println("Entrada inválida. Por favor, ingrese números enteros.");
+                    entrada.nextLine(); // Limpiar la entrada
                 }
-                cambiarJugador();
-            } else {
-                System.out.println("Movimiento inválido. Intente nuevamente.");
             }
+
+            // Colocar el símbolo del jugador actual en el tablero
+            tablero[fila][columna] = jugadorActual;
+
+            // Verificar si hay un ganador o un empate
+            if (verificarGanador()) {
+                mostrarTablero();
+                System.out.println("¡Felicidades, " + nombreJugadorActual + "! El jugador " + jugadorActual + " ha ganado.");
+                break;
+            } else if (verificarEmpate()) {
+                mostrarTablero();
+                System.out.println("¡El juego terminó en empate!");
+                break;
+            }
+
+            cambiarJugador();
         }
     }
 
     private static void inicializarTablero() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                board[i][j] = ' ';
+                tablero[i][j] = ' ';
             }
         }
     }
@@ -120,7 +154,7 @@ public class TaTeTi {
         for (int i = 0; i < 3; i++) {
             System.out.print((i + 1) + " ");
             for (int j = 0; j < 3; j++) {
-                System.out.print(board[i][j]);
+                System.out.print(tablero[i][j]);
                 if (j < 2) System.out.print(" | ");
             }
             System.out.println();
@@ -130,25 +164,31 @@ public class TaTeTi {
 
     private static boolean verificarGanador() {
         for (int i = 0; i < 3; i++) {
-            if (board[i][0] == currentPlayer && board[i][1] == currentPlayer && board[i][2] == currentPlayer)
+            if (tablero[i][0] == jugadorActual && tablero[i][1] == jugadorActual && tablero[i][2] == jugadorActual)
                 return true;
-            if (board[0][i] == currentPlayer && board[1][i] == currentPlayer && board[2][i] == currentPlayer)
+            if (tablero[0][i] == jugadorActual && tablero[1][i] == jugadorActual && tablero[2][i] == jugadorActual)
                 return true;
         }
-        return (board[0][0] == currentPlayer && board[1][1] == currentPlayer && board[2][2] == currentPlayer) ||
-               (board[0][2] == currentPlayer && board[1][1] == currentPlayer && board[2][0] == currentPlayer);
+        return (tablero[0][0] == jugadorActual && tablero[1][1] == jugadorActual && tablero[2][2] == jugadorActual) ||
+               (tablero[0][2] == jugadorActual && tablero[1][1] == jugadorActual && tablero[2][0] == jugadorActual);
     }
 
     private static boolean verificarEmpate() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (board[i][j] == ' ') return false;
+                if (tablero[i][j] == ' ') return false;
             }
         }
         return true;
     }
 
     private static void cambiarJugador() {
-        currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+        jugadorActual = (jugadorActual == 'X') ? 'O' : 'X';
+    }
+
+    private static void mostrarDespedida() {
+        System.out.println("Gracias por jugar, " + nombreJugador1 + " y " + nombreJugador2 + "! Esperamos que hayas disfrutado del juego.");
+        System.out.println("Recuerda: Si lo puedes imaginar, lo puedes programar.");
+        System.out.println("Ariel Bentancud");
     }
 }
