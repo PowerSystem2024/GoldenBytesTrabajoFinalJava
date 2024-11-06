@@ -46,7 +46,7 @@ public class TaTeTi {
                 case 1 -> iniciarJuego();
                 case 2 -> mostrarReglas();
                 case 3 -> mostrarCreditos();
-                case 4 -> System.out.println("Gracias por jugar. ¡Hasta pronto!");
+                case 4 -> mostrarDespedida();
                 default -> System.out.println("Opción no válida. Intente de nuevo.");
             }
         } while (opcion != 4);
@@ -149,5 +149,11 @@ public class TaTeTi {
 
     private static void cambiarJugador() {
         jugadorActual = (jugadorActual == 'X') ? 'O' : 'X';
+    }
+
+    private static void mostrarDespedida() {
+        System.out.println("Gracias por jugar, " + nombreJugador1 + " y " + nombreJugador2 + "! Esperamos que hayas disfrutado del juego.");
+        System.out.println("Recuerda: Si lo puedes imaginar, lo puedes programar.");
+        System.out.println("Ariel Bentancud");
     }
 }
