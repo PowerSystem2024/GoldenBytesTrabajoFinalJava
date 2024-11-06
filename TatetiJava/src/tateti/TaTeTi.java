@@ -12,6 +12,8 @@ public class TaTeTi {
 
     public static void main(String[] args) {
         mostrarPresentacion();
+        solicitarNombresJugadores();
+        mostrarBienvenida();
         inicializarTablero();
         mostrarMenu();
     }
@@ -28,6 +30,23 @@ public class TaTeTi {
 
         System.out.println("Presiona Enter para comenzar...");
         entrada.nextLine(); // Espera la entrada de Enter
+    }
+
+    private static void solicitarNombresJugadores() {
+        do {
+            System.out.print("Ingrese el nombre del Jugador 1 (X) (mínimo 3 letras): ");
+            nombreJugador1 = entrada.nextLine();
+        } while (nombreJugador1.length() < 3);
+
+        do {
+            System.out.print("Ingrese el nombre del Jugador 2 (O) (mínimo 3 letras): ");
+            nombreJugador2 = entrada.nextLine();
+        } while (nombreJugador2.length() < 3);
+    }
+
+    private static void mostrarBienvenida() {
+        System.out.println("\n¡Bienvenidos, " + nombreJugador1 + " y " + nombreJugador2 + "!");
+        System.out.println("Prepárense para una partida emocionante de Ta-Te-Ti.\n");
     }
 
     private static void mostrarMenu() {
@@ -72,10 +91,6 @@ public class TaTeTi {
     }
 
     private static void iniciarJuego() {
-        System.out.print("Ingrese el nombre del Jugador 1 (X): ");
-        nombreJugador1 = entrada.nextLine();
-        System.out.print("Ingrese el nombre del Jugador 2 (O): ");
-        nombreJugador2 = entrada.nextLine();
         inicializarTablero();
         jugadorActual = 'X';
 
