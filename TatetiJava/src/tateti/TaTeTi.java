@@ -4,11 +4,11 @@ import java.util.Scanner;
 
 public class TaTeTi {
 
-    private static Scanner scanner = new Scanner(System.in);
-    private static String player1Name;
-    private static String player2Name;
-    private static char[][] board = new char[3][3];
-    private static char currentPlayer = 'X';
+    private static Scanner entrada = new Scanner(System.in);
+    private static String nombreJugador1;
+    private static String nombreJugador2;
+    private static char[][] tablero = new char[3][3];
+    private static char jugadorActual = 'X';
 
     public static void main(String[] args) {
         mostrarPresentacion();
@@ -26,9 +26,8 @@ public class TaTeTi {
         System.out.println("            estrategia y pensamiento rápido.          ");
         System.out.println("======================================================\n");
 
-        // Espera a que el usuario presione Enter para continuar
         System.out.println("Presiona Enter para comenzar...");
-        scanner.nextLine(); // Espera la entrada de Enter
+        entrada.nextLine(); // Espera la entrada de Enter
     }
 
     private static void mostrarMenu() {
@@ -40,8 +39,8 @@ public class TaTeTi {
             System.out.println("3. Créditos");
             System.out.println("4. Salir");
             System.out.print("Elige una opción: ");
-            opcion = scanner.nextInt();
-            scanner.nextLine(); // Consumir el salto de línea
+            opcion = entrada.nextInt();
+            entrada.nextLine(); // Consumir el salto de línea
 
             switch (opcion) {
                 case 1 -> iniciarJuego();
@@ -60,7 +59,7 @@ public class TaTeTi {
         System.out.println("3. El primer jugador que logre colocar tres símbolos en línea (horizontal, vertical o diagonal) gana.");
         System.out.println("4. Si todas las celdas se llenan sin un ganador, el juego termina en empate.");
         System.out.println("Presiona Enter para regresar al menú...");
-        scanner.nextLine();
+        entrada.nextLine();
     }
 
     private static void mostrarCreditos() {
@@ -69,31 +68,31 @@ public class TaTeTi {
         System.out.println("Autor: GoldenBytes");
         System.out.println("Universidad Tecnológica Nacional, Proyecto Integrador.");
         System.out.println("Presiona Enter para regresar al menú...");
-        scanner.nextLine();
+        entrada.nextLine();
     }
 
     private static void iniciarJuego() {
         System.out.print("Ingrese el nombre del Jugador 1 (X): ");
-        player1Name = scanner.nextLine();
+        nombreJugador1 = entrada.nextLine();
         System.out.print("Ingrese el nombre del Jugador 2 (O): ");
-        player2Name = scanner.nextLine();
+        nombreJugador2 = entrada.nextLine();
         inicializarTablero();
-        currentPlayer = 'X';
+        jugadorActual = 'X';
 
         while (true) {
             mostrarTablero();
-            String currentPlayerName = (currentPlayer == 'X') ? player1Name : player2Name;
-            System.out.println(currentPlayerName + ", es tu turno. Jugador: " + currentPlayer);
+            String nombreJugadorActual = (jugadorActual == 'X') ? nombreJugador1 : nombreJugador2;
+            System.out.println(nombreJugadorActual + ", es tu turno. Jugador: " + jugadorActual);
             System.out.print("Ingrese fila (1-3): ");
-            int fila = scanner.nextInt() - 1;
+            int fila = entrada.nextInt() - 1;
             System.out.print("Ingrese columna (1-3): ");
-            int columna = scanner.nextInt() - 1;
+            int columna = entrada.nextInt() - 1;
 
-            if (fila >= 0 && fila < 3 && columna >= 0 && columna < 3 && board[fila][columna] == ' ') {
-                board[fila][columna] = currentPlayer;
+            if (fila >= 0 && fila < 3 && columna >= 0 && columna < 3 && tablero[fila][columna] == ' ') {
+                tablero[fila][columna] = jugadorActual;
                 if (verificarGanador()) {
                     mostrarTablero();
-                    System.out.println("¡Felicidades, " + currentPlayerName + "! El jugador " + currentPlayer + " ha ganado.");
+                    System.out.println("¡Felicidades, " + nombreJugadorActual + "! El jugador " + jugadorActual + " ha ganado.");
                     break;
                 } else if (verificarEmpate()) {
                     mostrarTablero();
@@ -110,7 +109,7 @@ public class TaTeTi {
     private static void inicializarTablero() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                board[i][j] = ' ';
+                tablero[i][j] = ' ';
             }
         }
     }
@@ -120,7 +119,7 @@ public class TaTeTi {
         for (int i = 0; i < 3; i++) {
             System.out.print((i + 1) + " ");
             for (int j = 0; j < 3; j++) {
-                System.out.print(board[i][j]);
+                System.out.print(tablero[i][j]);
                 if (j < 2) System.out.print(" | ");
             }
             System.out.println();
@@ -130,25 +129,25 @@ public class TaTeTi {
 
     private static boolean verificarGanador() {
         for (int i = 0; i < 3; i++) {
-            if (board[i][0] == currentPlayer && board[i][1] == currentPlayer && board[i][2] == currentPlayer)
+            if (tablero[i][0] == jugadorActual && tablero[i][1] == jugadorActual && tablero[i][2] == jugadorActual)
                 return true;
-            if (board[0][i] == currentPlayer && board[1][i] == currentPlayer && board[2][i] == currentPlayer)
+            if (tablero[0][i] == jugadorActual && tablero[1][i] == jugadorActual && tablero[2][i] == jugadorActual)
                 return true;
         }
-        return (board[0][0] == currentPlayer && board[1][1] == currentPlayer && board[2][2] == currentPlayer) ||
-               (board[0][2] == currentPlayer && board[1][1] == currentPlayer && board[2][0] == currentPlayer);
+        return (tablero[0][0] == jugadorActual && tablero[1][1] == jugadorActual && tablero[2][2] == jugadorActual) ||
+               (tablero[0][2] == jugadorActual && tablero[1][1] == jugadorActual && tablero[2][0] == jugadorActual);
     }
 
     private static boolean verificarEmpate() {
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (board[i][j] == ' ') return false;
+                if (tablero[i][j] == ' ') return false;
             }
         }
         return true;
     }
 
     private static void cambiarJugador() {
-        currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+        jugadorActual = (jugadorActual == 'X') ? 'O' : 'X';
     }
 }
