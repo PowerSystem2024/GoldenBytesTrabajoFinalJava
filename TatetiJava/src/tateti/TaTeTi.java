@@ -1,5 +1,6 @@
 package tateti;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class TaTeTi {
@@ -98,26 +99,45 @@ public class TaTeTi {
             mostrarTablero();
             String nombreJugadorActual = (jugadorActual == 'X') ? nombreJugador1 : nombreJugador2;
             System.out.println(nombreJugadorActual + ", es tu turno. Jugador: " + jugadorActual);
-            System.out.print("Ingrese fila (1-3): ");
-            int fila = entrada.nextInt() - 1;
-            System.out.print("Ingrese columna (1-3): ");
-            int columna = entrada.nextInt() - 1;
+            
+            int fila = -1, columna = -1;
 
-            if (fila >= 0 && fila < 3 && columna >= 0 && columna < 3 && tablero[fila][columna] == ' ') {
-                tablero[fila][columna] = jugadorActual;
-                if (verificarGanador()) {
-                    mostrarTablero();
-                    System.out.println("¡Felicidades, " + nombreJugadorActual + "! El jugador " + jugadorActual + " ha ganado.");
-                    break;
-                } else if (verificarEmpate()) {
-                    mostrarTablero();
-                    System.out.println("¡El juego terminó en empate!");
-                    break;
+            // Repetir hasta obtener coordenadas válidas
+            boolean coordenadasValidas = false;
+            while (!coordenadasValidas) {
+                try {
+                    System.out.print("Ingrese fila (1-3): ");
+                    fila = entrada.nextInt() - 1;
+                    System.out.print("Ingrese columna (1-3): ");
+                    columna = entrada.nextInt() - 1;
+
+                    // Validar rango de filas y columnas
+                    if (fila >= 0 && fila < 3 && columna >= 0 && columna < 3 && tablero[fila][columna] == ' ') {
+                        coordenadasValidas = true;
+                    } else {
+                        System.out.println("Movimiento inválido. Intente nuevamente.");
+                    }
+                } catch (InputMismatchException e) {
+                    System.out.println("Entrada inválida. Por favor, ingrese números enteros.");
+                    entrada.nextLine(); // Limpiar la entrada
                 }
-                cambiarJugador();
-            } else {
-                System.out.println("Movimiento inválido. Intente nuevamente.");
             }
+
+            // Colocar el símbolo del jugador actual en el tablero
+            tablero[fila][columna] = jugadorActual;
+
+            // Verificar si hay un ganador o un empate
+            if (verificarGanador()) {
+                mostrarTablero();
+                System.out.println("¡Felicidades, " + nombreJugadorActual + "! El jugador " + jugadorActual + " ha ganado.");
+                break;
+            } else if (verificarEmpate()) {
+                mostrarTablero();
+                System.out.println("¡El juego terminó en empate!");
+                break;
+            }
+
+            cambiarJugador();
         }
     }
 
